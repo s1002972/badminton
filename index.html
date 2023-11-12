@@ -21,9 +21,16 @@
 
     <h2>常用人名：</h2>
     <ul id="commonNames" class="list-group">
-      <li class="list-group-item"><a href="#" onclick="addCommonName('Mary')">Mary</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('Tom')">Tom</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('玟')">玟</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('琳')">琳</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('綾')">綾</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('吉')">吉</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('佑')">佑</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('鈴')">鈴</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('軒')">軒</a></li>
+      <li class="list-group-item"><a href="#" onclick="addCommonName('秀')">秀</a></li>
     </ul>
+    <button type="button" class="btn btn-primary mt-3" onclick="addAllCommonNames()">一鍵添加所有常用人名</button>
 
     <button type="button" class="btn btn-primary mt-3" onclick="groupNames()">自動分組</button>
     <h2>分組結果：</h2>
@@ -32,6 +39,7 @@
 
   <script>
     var names = [];
+    var groups = [];
 
     function addName() {
       var nameInput = document.getElementById("nameInput");
@@ -85,6 +93,13 @@
       }
     }
 
+    function addAllCommonNames() {
+      var commonNames = ["Mary", "Tom"];
+      commonNames.forEach(function (name) {
+        addCommonName(name);
+      });
+    }
+
     function removeName(name) {
       var nameList = document.getElementById("nameList");
       var index = names.indexOf(name);
@@ -97,6 +112,7 @@
     function groupNames() {
       var groupList = document.getElementById("groupList");
       groupList.innerHTML = "";
+      groups = [];
 
       var shuffledNames = shuffle(names);
       var groupCount = Math.ceil(shuffledNames.length / 2);
@@ -112,29 +128,30 @@
 
         if (member1) {
           groupItem.appendChild(document.createTextNode(member1));
+          groups.push(member1);
         }
 
         if (member2) {
           groupItem.appendChild(document.createTextNode(", " + member2));
+          groups.push(member2);
         }
 
         groupList.appendChild(groupItem);
       }
     }
 
+    // Fisher-Yates shuffle algorithm
     function shuffle(array) {
-      var currentIndex = array.length, temporaryValue, randomIndex;
+      var currentIndex = array.length,
+        temporaryValue,
+        randomIndex;
 
-      // While there remain elements to shuffle...
       while (0 !== currentIndex) {
-
-        // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
 
-        // And swap it with the current element.
         temporaryValue = array[currentIndex];
-        array[currentIndex]
+        array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
       }
 
