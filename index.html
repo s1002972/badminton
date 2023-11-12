@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>隨機分組</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>隨機分組</h1>
+  <label for="names">輸入人名（以逗號分隔）：</label>
+  <input type="text" id="names">
+  <button onclick="generateGroups()">生成分組</button>
+  <div id="result"></div>
+
+  <script>
+    async function generateGroups() {
+      const namesInput = document.getElementById('names');
+      const resultDiv = document.getElementById('result');
+
+      const names = namesInput.value.split(',').map(name => name.trim()).filter(Boolean);
+
+      if (names.length < 2) {
+        resultDiv.innerText = '請至少輸入兩個人名。';
+        return;
+      }
+
+      const response = await fetch('http://localhost:3000/generate-groups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ names }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        resultDiv.innerText = '分組結果：\n' + data.groups.map(group => group.join(' 和 ')).join('\n');
+      }
+    }
+
+    async function recordScore(groupIndex, score) {
+      const response = await fetch('http://localhost:3000/record-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ groupIndex, score }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('比賽分數已記錄！');
+      }
+    }
+
+    async function getGroups() {
+      const response = await fetch('http://localhost:3000/get-groups');
+      const groups = await response.json();
+
+      // 在這裡使用 groups 數據進行顯示或其他處理
+      console.log(groups);
+    }
+  </script>
+</body>
+</html>
