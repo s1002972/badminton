@@ -1,8 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>輸入人名</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Additional styles if needed */
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
   <div class="container mt-5">
@@ -16,27 +31,27 @@
       <button type="button" class="btn btn-primary" onclick="addName()">新增</button>
     </form>
 
-    <h2>已輸入的人名：</h2>
-    <ul id="nameList" class="list-group"></ul>
+    <h2>已輸入的人名(點選移除)：</h2>
+    <div id="nameList" class="btn-group-horizontal"></div>
 
     <h2>常用人名：</h2>
-    <ul id="commonNames" class="list-group">
-      <li class="list-group-item"><a href="#" onclick="addCommonName('玟')">玟</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('琳')">琳</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('綾')">綾</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('吉')">吉</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('佑')">佑</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('鈴')">鈴</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('軒')">軒</a></li>
-      <li class="list-group-item"><a href="#" onclick="addCommonName('秀')">秀</a></li>
-    </ul>
+    <div id="commonNames" class="btn-group-horizontal">
+      <button class="btn btn-outline-warning" type="button" onclick="addCommonName('玟')">玟</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('琳')">琳</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('綾')">綾</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('吉')">吉</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('佑')">佑</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('鈴')">鈴</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('軒')">軒</button>
+      <button type="button" class="btn btn-outline-warning" onclick="addCommonName('秀')">秀</button>
+    </div>
     <button type="button" class="btn btn-primary mt-3" onclick="addAllCommonNames()">一鍵添加所有常用人名</button>
 
     <button type="button" class="btn btn-primary mt-3" onclick="groupNames()">自動分組</button>
     <h2>分組結果：</h2>
     <ul id="groupList" class="list-group"></ul>
   </div>
-
+  
   <script>
     var names = [];
     var groups = [];
@@ -52,19 +67,15 @@
           return;
         }
 
-        var listItem = document.createElement("li");
-        listItem.className = "list-group-item";
-        listItem.appendChild(document.createTextNode(name));
-
-        var deleteButton = document.createElement("span");
-        deleteButton.innerHTML = "&#10006;";
-        deleteButton.className = "delete-button";
-        deleteButton.addEventListener("click", function () {
+        var buttonItem = document.createElement("button");
+        buttonItem.className = "btn btn-outline-danger";
+        buttonItem.type = "button";
+        buttonItem.addEventListener("click", function () {
           removeName(name);
         });
+        buttonItem.appendChild(document.createTextNode(name));
 
-        listItem.appendChild(deleteButton);
-        nameList.appendChild(listItem);
+        nameList.appendChild(buttonItem);
         names.push(name);
         nameInput.value = "";
       }
@@ -75,37 +86,57 @@
       var nameList = document.getElementById("nameList");
 
       if (!names.includes(name)) {
-        var listItem = document.createElement("li");
-        listItem.className = "list-group-item";
-        listItem.appendChild(document.createTextNode(name));
-
-        var deleteButton = document.createElement("span");
-        deleteButton.innerHTML = "&#10006;";
-        deleteButton.className = "delete-button";
-        deleteButton.addEventListener("click", function () {
+        // 创建一个按钮元素
+        var buttonItem = document.createElement("button");
+        buttonItem.className = "btn btn-outline-danger";
+        buttonItem.type = "button";
+        buttonItem.addEventListener("click", function () {
           removeName(name);
         });
+        buttonItem.appendChild(document.createTextNode(name));
 
-        listItem.appendChild(deleteButton);
-        nameList.appendChild(listItem);
+        // 将按钮元素添加到nameList中
+        nameList.appendChild(buttonItem);
+
+        // 将名字添加到数组中
         names.push(name);
         nameInput.value = "";
       }
     }
 
     function addAllCommonNames() {
-      var commonNames = ["Mary", "Tom"];
-      commonNames.forEach(function (name) {
+      // 获取包含按钮的父元素
+      var divElement = document.getElementById('commonNames');
+
+      // 获取父元素中所有按钮元素
+      var buttonElements = divElement.getElementsByTagName('button');
+
+      // 遍历所有按钮元素
+      for (var i = 0; i < buttonElements.length; i++) {
+        // 获取按钮元素的文本内容（名字）
+        var name = buttonElements[i].innerHTML;
+
+        // 将名字添加到数组中
         addCommonName(name);
-      });
+      }
     }
 
     function removeName(name) {
       var nameList = document.getElementById("nameList");
+      var buttons = nameList.children;
+
+      for (var i = 0; i < buttons.length; i++) {
+        if (buttons[i].innerHTML === name) {
+          // 移除对应的按钮
+          nameList.removeChild(buttons[i]);
+          break;
+        }
+      }
+
       var index = names.indexOf(name);
       if (index > -1) {
+        // 从数组中移除名字
         names.splice(index, 1);
-        nameList.removeChild(nameList.childNodes[index]);
       }
     }
 
